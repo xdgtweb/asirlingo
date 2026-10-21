@@ -516,6 +516,162 @@ body{
 .fill-word:active{ transform:translateY(2px); border-bottom-width:2px; }
 .fill-word.used{ opacity:0; pointer-events:none; transform:scale(.8); }
 
+/* ---- Respuesta de texto libre ---- */
+.text-answer-wrap{
+  width:100%; max-width:520px;
+  display:flex; flex-direction:column; align-items:stretch; gap:14px;
+}
+.text-answer-input{
+  width:100%; padding:16px 20px;
+  background:var(--surface-card);
+  border:2.5px solid var(--border-color); border-bottom-width:4px;
+  border-radius:var(--radius);
+  font-family:var(--font); font-size:1.05rem; font-weight:700; color:var(--eel);
+  outline:none; transition:var(--trans);
+  animation:screenIn .35s backwards;
+  resize:none;
+  min-height:56px;
+}
+.text-answer-input::placeholder{ color:var(--hare); font-weight:600; }
+.text-answer-input:focus{ border-color:var(--blue); box-shadow:0 0 0 3px var(--blue-lt); }
+.text-answer-input.correct-input{ border-color:var(--green); background:var(--green-lt); color:var(--green-d); }
+.text-answer-input.wrong-input{ border-color:var(--red); background:var(--red-lt); color:var(--red-d); }
+.text-correct-answer{
+  display:none; padding:12px 18px;
+  background:var(--green-lt); border:2px solid var(--green-bd);
+  border-radius:var(--radius-sm);
+  font-size:.9rem; font-weight:800; color:var(--green-d);
+  animation:screenIn .3s ease;
+}
+.text-correct-answer strong{ font-weight:900; }
+.text-answer-hint{
+  font-size:.75rem; font-weight:700; color:var(--hare); text-align:center;
+  letter-spacing:.5px;
+}
+/* Modo difícil */
+.hard-mode-picker{
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+  padding:22px 18px 18px;
+}
+.hard-mode-picker h3{
+  font-size:1.1rem; font-weight:900; color:var(--eel);
+  text-align:center; letter-spacing:-.02em;
+}
+.hard-mode-picker p{
+  font-size:.88rem; color:var(--wolf); font-weight:700; text-align:center; line-height:1.5;
+}
+.hard-picker-btns{ display:flex; gap:12px; width:100%; max-width:340px; }
+.btn-mode-normal, .btn-mode-hard{
+  flex:1; padding:16px 10px; border:none; border-radius:var(--radius-sm);
+  font-family:var(--font); font-size:.95rem; font-weight:900;
+  letter-spacing:.8px; text-transform:uppercase; cursor:pointer; transition:var(--trans);
+}
+.btn-mode-normal{
+  background:var(--green); color:#fff; box-shadow:0 4px 0 var(--green-d);
+}
+.btn-mode-normal:hover{ filter:brightness(1.07); }
+.btn-mode-normal:active{ transform:translateY(4px); box-shadow:none; }
+.btn-mode-hard{
+  background:var(--red); color:#fff; box-shadow:0 4px 0 var(--red-d);
+}
+.btn-mode-hard:hover{ filter:brightness(1.07); }
+.btn-mode-hard:active{ transform:translateY(4px); box-shadow:none; }
+.hard-badge{
+  display:inline-flex; align-items:center; gap:5px;
+  background:var(--red); color:#fff;
+  font-size:.62rem; font-weight:900; letter-spacing:1px; text-transform:uppercase;
+  padding:3px 8px; border-radius:99px;
+  position:absolute; top:-10px; right:-10px;
+}
+
+/* ============================================================
+   NODE POPOVER (bocadillo de selección modo normal/difícil)
+   ============================================================ */
+.node-popover{
+  position:fixed; z-index:350;
+  width:clamp(220px, 72vw, 280px);
+  background:var(--surface-card);
+  border:2px solid var(--border-color);
+  border-radius:var(--radius-lg);
+  box-shadow:0 12px 40px rgba(0,0,0,.22), 0 2px 8px rgba(0,0,0,.12);
+  padding:16px 14px 14px;
+  display:flex; flex-direction:column; align-items:stretch; gap:8px;
+  /* animación gestionada por JS añadiendo/quitando clase */
+  transform-origin:top center;
+  pointer-events:auto;
+}
+.node-popover.pop-in{
+  animation:popoverIn .28s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+.node-popover.pop-out{
+  animation:popoverOut .18s cubic-bezier(.4,0,1,1) forwards;
+}
+@keyframes popoverIn{
+  from{ opacity:0; transform:scale(.82) translateY(-10px); }
+  to  { opacity:1; transform:scale(1)   translateY(0); }
+}
+@keyframes popoverOut{
+  from{ opacity:1; transform:scale(1)   translateY(0); }
+  to  { opacity:0; transform:scale(.88) translateY(-6px); }
+}
+/* flecha apuntando al nodo (por defecto arriba, JS puede cambiar a abajo) */
+.node-popover::before{
+  content:'';
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  border:9px solid transparent;
+}
+.node-popover.arrow-top::before{
+  top:-18px;
+  border-bottom-color:var(--border-color);
+}
+.node-popover.arrow-top::after{
+  content:''; position:absolute;
+  left:50%; transform:translateX(-50%);
+  top:-15px;
+  border:8px solid transparent;
+  border-bottom-color:var(--surface-card);
+}
+.node-popover.arrow-bottom::before{
+  bottom:-18px;
+  border-top-color:var(--border-color);
+}
+.node-popover.arrow-bottom::after{
+  content:''; position:absolute;
+  left:50%; transform:translateX(-50%);
+  bottom:-15px;
+  border:8px solid transparent;
+  border-top-color:var(--surface-card);
+}
+.node-popover-title{
+  font-size:.85rem; font-weight:900; color:var(--eel);
+  text-align:center; letter-spacing:-.01em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.node-popover-sub{
+  font-size:.72rem; font-weight:700; color:var(--hare);
+  text-align:center; margin-top:-4px;
+}
+.node-popover .btn-pop{
+  width:100%; padding:12px 10px;
+  border:none; border-radius:var(--radius-sm);
+  font-family:var(--font); font-size:.88rem; font-weight:900;
+  letter-spacing:.7px; text-transform:uppercase; cursor:pointer;
+  transition:var(--trans);
+}
+.node-popover .btn-pop.pop-normal{
+  background:var(--green); color:#fff;
+  box-shadow:0 4px 0 var(--green-d);
+}
+.node-popover .btn-pop.pop-normal:hover{ filter:brightness(1.08); }
+.node-popover .btn-pop.pop-normal:active{ transform:translateY(3px); box-shadow:none; }
+.node-popover .btn-pop.pop-hard{
+  background:var(--red); color:#fff;
+  box-shadow:0 4px 0 var(--red-d);
+}
+.node-popover .btn-pop.pop-hard:hover{ filter:brightness(1.08); }
+.node-popover .btn-pop.pop-hard:active{ transform:translateY(3px); box-shadow:none; }
+
 /* Flying word animation */
 .flying-word{
   position:fixed; z-index:1000; pointer-events:none;
@@ -1653,6 +1809,24 @@ const SUBJECTS = [
               { type: 'mc', prompt: '¿Qué es el mantenimiento preventivo?', options: ['Limpiar, revisar y sustituir componentes antes de que fallen', 'Reparar cuando el equipo ya está roto', 'Reinstalar software', 'Actualizar el antivirus'], correct: 0 },
               { type: 'tf', prompt: 'El objetivo de esta unidad es también identificar errores comunes del ordenador y realizar ampliaciones o reparaciones.', correct: true },
             ]
+          },
+          {
+            id: 'FH-UT1-L9',
+            name: '🔥 Repaso general (texto libre)',
+            desc: 'Responde escribiendo — para practicar el examen',
+            icon: '✍️',
+            questions: [
+              { type: 'text', prompt: '¿Qué arquitectura establece que instrucciones y datos se almacenan en la misma memoria principal?', correct: ['Von Neumann', 'arquitectura von neumann', 'von neumann'], explanation: 'La arquitectura Von Neumann (1945) es la base de todos los ordenadores modernos.' },
+              { type: 'text', prompt: '¿Qué registro especial de la CPU almacena la dirección de la siguiente instrucción a ejecutar?', correct: ['contador de programa', 'program counter', 'PC', 'IP', 'instruction pointer'], explanation: 'El Contador de Programa (PC) o Instruction Pointer (IP) apunta a la siguiente instrucción.' },
+              { type: 'text', prompt: '¿Qué componente de la CPU se encarga de gobernar y coordinar todo lo que ocurre dentro del procesador?', correct: ['unidad de control', 'UC', 'control unit'], explanation: 'La Unidad de Control (UC) emite las señales de control que sincronizan el resto de bloques.' },
+              { type: 'text', prompt: '¿Cuáles son los tres tipos de buses según su función en la arquitectura de un ordenador?', correct: ['datos, direcciones y control', 'datos direcciones control', 'bus de datos bus de direcciones bus de control'], explanation: 'Bus de datos (transfiere datos), bus de direcciones (indica la posición de memoria) y bus de control (señales de sincronización).' },
+              { type: 'text', prompt: 'Menciona los 4 elementos clásicos que forman un sistema informático (SI).', correct: ['hardware software personal documentacion', 'hardware, software, personal y documentación', 'hardware software personal y documentación'], explanation: 'Hardware, software, personal (usuarios y técnicos) y documentación.' },
+              { type: 'text', prompt: '¿Qué herramienta portátil menciona el profesor para obtener información de las características hardware del equipo?', correct: ['CPU-Z', 'cpuz', 'cpu z'], explanation: 'El profesor recomienda CPU-Z en su versión portable para analizar procesador, memoria y placa base.' },
+              { type: 'text', prompt: '¿Qué pasta se coloca entre el procesador y el disipador para mejorar la conducción de calor?', correct: ['pasta termica', 'pasta térmica', 'thermal paste'], explanation: 'La pasta térmica rellena las microirregularidades entre la CPU y el disipador mejorando la transferencia de calor.' },
+              { type: 'text', prompt: '¿Qué diferencia principal hay entre SRAM y DRAM?', correct: ['SRAM es estática y más rápida DRAM es dinámica', 'estatica rapida dinamica lenta', 'sram estatica dram dinamica'], explanation: 'SRAM (estática) es más rápida y cara, se usa en caché. DRAM (dinámica) es más lenta y barata, se usa en RAM principal.' },
+              { type: 'text', prompt: '¿Qué es el firmware y dónde reside en un ordenador personal?', correct: ['programa de bajo nivel que reside en ROM o BIOS', 'bios uefi rom', 'reside en la bios'], explanation: 'El firmware es el software de bajo nivel grabado en memoria no volátil (ROM/Flash) que arranca el hardware antes del SO.' },
+              { type: 'text', prompt: '¿Qué elemento de la placa base mantiene la configuración BIOS/UEFI y el reloj en tiempo real cuando el equipo está apagado?', correct: ['pila CMOS', 'pila cmos', 'bateria cmos', 'pila'], explanation: 'La pila CR2032 (CMOS) alimenta el RTC y la NVRAM donde se guarda la configuración del setup.' },
+            ]
           }
         ]
       }
@@ -1725,10 +1899,135 @@ const SUBJECTS = [
               { type: 'mc', prompt: '¿Qué modo de red hace que la VM aparezca como un equipo más de la red física?', options: ['Adaptador puente (bridge)', 'NAT', 'Red interna', 'NAT de red'], correct: 0 },
               { type: 'mc', prompt: '¿Qué modo de red permite comunicación entre VMs del mismo host sin salir al exterior?', options: ['Red interna', 'Adaptador puente', 'NAT', 'Genérica'], correct: 0 },
               { type: 'mc', prompt: '¿Para qué sirve el modo "solo-anfitrión" (host-only)?', options: ['Para comunicar las VMs con el equipo anfitrión mediante una red privada', 'Para salir a Internet', 'Para compartir impresoras', 'Para clonar discos'], correct: 0 },
-              { type: 'mc', prompt: '¿Por qué se recomienda añadir una interfaz en modo NAT en las prácticas?', options: ['Para poder instalar paquetes desde Internet', 'Para tener IP fija', 'Para compartir carpetas', 'Para activar USB 3.0'], correct: 0 },
-              { type: 'mc', prompt: '¿Qué elemento permite comprobar el estado de la conexión de red de la VM con comandos?', options: ['ip addr / ip route y ping', 'lsblk', 'df -h', 'vim'], correct: 0 },
               { type: 'tf', prompt: 'Los snapshots permiten guardar el estado de la VM y volver a ese punto si algo falla.', correct: true },
-              { type: 'fill', prompt: 'Varias máquinas virtuales conectadas a dos o más redes internas forman una red ___ de laboratorio.', words: ['empresarial', 'pública', 'inalámbrica', 'externa'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuál es el directorio donde VirtualBox guarda las VMs por defecto en Windows?', options: ['C:\\Users\\usuario\\VirtualBox VMs', 'C:\\Program Files\\VirtualBox', 'C:\\VMs', 'C:\\Users\\Public'], correct: 0 },
+              { type: 'tf', prompt: 'Un sistema virtualizado siempre se ejecutará con mayor lentitud que uno no virtualizado corriendo sobre el mismo hardware.', correct: true, explanation: 'La virtualización añade una capa de abstracción que consume recursos extra.' },
+              { type: 'mc', prompt: '¿Qué porcentaje máximo de RAM del host se recomienda asignar a una máquina virtual?', options: ['50%', '75%', '25%', '100%'], correct: 0 },
+            ]
+          },
+          {
+            id: 'ISO-UD1-L5',
+            name: 'Conceptos de SO: tipos y funciones',
+            desc: 'Kernel, Shell, clasificación de SO',
+            icon: '🧠',
+            questions: [
+              { type: 'mc', prompt: '¿Qué es el sistema operativo?', subtitle: 'Definición del libro de texto ISO', options: ['Un conjunto de programas que gestiona y coordina el funcionamiento del hardware y del software', 'Solo el hardware del equipo', 'El navegador web del sistema', 'El firmware de la placa base'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuáles son los tres componentes estructurales básicos de un SO?', options: ['Núcleo (kernel), aplicaciones base y Shell/interfaz de usuario', 'BIOS, RAM y CPU', 'Firefox, Office y antivirus', 'MBR, FAT y NTFS'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué es el kernel de un SO?', options: ['El núcleo que facilita a los programas acceso seguro al hardware', 'El intérprete de comandos de usuario', 'Las aplicaciones ofimáticas', 'El gestor de arranque GRUB'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué es el Shell en un SO?', options: ['El intérprete de comandos o interfaz de órdenes entre el usuario y el kernel', 'El núcleo del sistema', 'La partición de arranque', 'El sistema de archivos'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué función realiza el SO al abrir un videojuego?', subtitle: 'Ejemplo del profesor en videoconferencia', options: ['Coordina el uso del procesador, memoria y tarjeta gráfica', 'Solo carga la imagen del juego', 'Reserva espacio en disco', 'Actualiza los drivers'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué tipo de SO permite que varios usuarios trabajen simultáneamente?', options: ['Multiusuario', 'Monousuario', 'Monotarea', 'Tiempo real'], correct: 0 },
+              { type: 'mc', prompt: '¿Son Windows 10 y 11 monousuario o multiusuario?', options: ['Monousuario (solo un escritorio activo a la vez)', 'Multiusuario completo como Linux Server', 'Siempre multiusuario', 'Depende del procesador'], correct: 0, explanation: 'W10/11 soportan perfiles de usuario pero no escritorios múltiples concurrentes. Las versiones Server sí son multiusuario completas mediante Terminal Services.' },
+              { type: 'mc', prompt: '¿Qué SO es monotarea?', options: ['MS-DOS', 'Windows 10', 'Ubuntu', 'Windows Server 2019'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuáles son las 5 funciones principales del SO según el temario?', options: ['Gestión de CPU, memoria, periféricos, archivos, seguridad y redes', 'Solo gestión de archivos y red', 'Antivirus, firewall y backup', 'Gestión de BIOS y firmware'], correct: 0 },
+              { type: 'tf', prompt: 'Linux puede leer y escribir sistemas de archivos NTFS, pero Windows no puede leer ext4 sin software de terceros.', correct: true },
+            ]
+          },
+          {
+            id: 'ISO-UD1-L6',
+            name: 'Particiones y sistemas de archivos',
+            desc: 'MBR, GPT, particiones primarias, ext4, NTFS, FAT32',
+            icon: '💾',
+            questions: [
+              { type: 'mc', prompt: '¿Qué es una partición de disco?', options: ['Una división lógica dentro de una unidad física de almacenamiento', 'Un tipo de cable SATA', 'Un sistema operativo', 'Una memoria caché'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuántas particiones primarias máximas permite el esquema MBR clásico?', options: ['4', '8', '128', '2'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuántas particiones admite el esquema GPT por defecto?', options: ['128', '4', '16', '32'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué sistema de archivos usa Ubuntu en la partición raíz?', options: ['ext4', 'NTFS', 'FAT32', 'ZFS'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuál es el tamaño máximo de fichero en FAT32?', options: ['4 GB', '16 TB', '2 TB', '256 TB'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuál es el tamaño máximo de fichero en NTFS?', options: ['16 TB', '4 GB', '2 TB', '1 EB'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué característica importante tiene ext4 frente a FAT32?', options: ['Es transaccional (journaling) y prácticamente sin fragmentación', 'Es más rápido en Windows', 'Soporta más de 4 GB por fichero en Windows', 'Solo funciona con MBR'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué nombre reciben los pendrives y CDs en Linux bajo el directorio /dev/?', options: ['/dev/sdXY (discos SATA/SCSI/USB)', '/dev/hdXY', 'C:, D:, E:', '/etc/sdXY'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué es la partición swap en Linux?', options: ['La memoria virtual de intercambio que complementa la RAM', 'La partición del sistema operativo', 'La partición de datos del usuario', 'Una partición de arranque EFI'], correct: 0 },
+              { type: 'tf', prompt: 'El directorio /home en Linux es equivalente a C:\\Users en Windows y contiene los ficheros personales de cada usuario.', correct: true },
+              { type: 'mc', prompt: '¿Qué directorio de Linux contiene los archivos de configuración del sistema?', options: ['/etc', '/bin', '/home', '/var'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué directorio de Linux es equivalente a C:\\Archivos de programa de Windows?', options: ['/usr', '/etc', '/var', '/opt'], correct: 0 },
+              { type: 'match', prompt: 'Empareja cada directorio Linux con su función:', pairs: [
+                { a: '/etc', b: 'Archivos de configuración del sistema' },
+                { a: '/home', b: 'Ficheros personales de usuarios' },
+                { a: '/var', b: 'Logs y datos variables (servidores)' },
+                { a: '/boot', b: 'Kernel y gestor de arranque GRUB' },
+              ]},
+            ]
+          },
+          {
+            id: 'ISO-UD1-L7',
+            name: 'BIOS/UEFI, MBR, GPT y arranque',
+            desc: 'POST, secuencia de arranque, GRUB2, BCD de Windows',
+            icon: '🚀',
+            questions: [
+              { type: 'mc', prompt: '¿Qué es la BIOS?', options: ['Sistema Básico de Entrada/Salida: firmware que carga el SO en RAM', 'El sistema operativo principal', 'Una partición del disco', 'Un tipo de memoria RAM'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué es el proceso POST?', options: ['Power On Self Test: comprueba el hardware antes de cargar el SO', 'Un tipo de solicitud HTTP', 'Un gestor de arranque de Linux', 'El proceso de formateo del disco'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué almacena el MBR (Master Boot Record)?', options: ['La tabla de particiones y el programa de inicialización de arranque', 'Los archivos personales del usuario', 'El kernel de Linux', 'La configuración WiFi'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué es GRUB2?', options: ['El gestor de arranque más usado en Linux (Grand Unified Bootloader)', 'Un sistema de archivos de Linux', 'Un hipervisor tipo 1', 'El gestor de red de Ubuntu'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué archivo de Windows almacena la configuración del menú de arranque desde Vista en adelante?', options: ['BCD (Boot Configuration Data)', 'boot.ini', 'NTLDR', 'GRUB.cfg'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué comando de Windows permite modificar el archivo BCD desde la consola?', options: ['bcdedit', 'msconfig', 'bootmgr', 'diskpart'], correct: 0 },
+              { type: 'tf', prompt: 'Al instalar Windows y Linux en el mismo equipo, se debe instalar Linux al final para que GRUB detecte ambos sistemas.', correct: true, explanation: 'El gestor de arranque de Windows no detecta Linux, pero GRUB sí detecta Windows.' },
+              { type: 'mc', prompt: '¿Qué es el bootstrap?', options: ['El programa que arranca el sistema operativo (GRUB, LILO, Bootmgr), ejecutado tras el POST', 'El kernel de Linux', 'Un tipo de disco GPT', 'La tabla de inodos de ext4'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué ventaja tiene UEFI frente a BIOS?', options: ['Admite discos mayores de 2 TB, más de 4 particiones primarias y arranque más rápido', 'Solo funciona con Linux', 'Solo funciona con Windows XP', 'No soporta GPT'], correct: 0 },
+              { type: 'mc', prompt: '¿En qué archivo de GRUB2 se cambia el sistema operativo por defecto y el tiempo de espera?', options: ['/etc/default/grub', '/boot/grub/grub.cfg', '/etc/grub.conf', '/etc/fstab'], correct: 0, explanation: 'Se edita /etc/default/grub y luego se ejecuta sudo update-grub2.' },
+              { type: 'fill', prompt: 'Después de editar /etc/default/grub hay que ejecutar el comando ___ para actualizar la configuración.', words: ['sudo update-grub2', 'sudo reboot', 'sudo apt update', 'sudo grub-install'], correct: 0 },
+            ]
+          },
+          {
+            id: 'ISO-UD1-L8',
+            name: 'Licencias y Linux',
+            desc: 'GPL, software libre, privativo y distribuciones',
+            icon: '📜',
+            questions: [
+              { type: 'mc', prompt: '¿Qué es una licencia de software?', options: ['Un contrato que establece los términos de uso del programa', 'Un tipo de sistema de archivos', 'Un formato de disco', 'Un gestor de arranque'], correct: 0 },
+              { type: 'mc', prompt: '¿Quién creó el movimiento GNU en 1983?', options: ['Richard Stallman', 'Linus Torvalds', 'Bill Gates', 'Steve Jobs'], correct: 0 },
+              { type: 'mc', prompt: '¿Quién escribió el primer kernel de Linux en 1991?', options: ['Linus Torvalds', 'Richard Stallman', 'Dennis Ritchie', 'Ken Thompson'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué significa GPL?', options: ['General Public License — licencia pública general', 'General Program Language', 'GNU Protected License', 'Global Permission License'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuál es la libertad 0 del software libre según la FSF?', options: ['Libertad de uso: ejecutar el programa para cualquier propósito', 'Modificar el código fuente', 'Distribuir copias', 'Distribuir versiones modificadas'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuántas libertades define el software libre?', options: ['4 (libertades 0, 1, 2 y 3)', '3', '5', '7'], correct: 0 },
+              { type: 'tf', prompt: 'El software privativo permite la modificación y redistribución libre del código fuente.', correct: false, explanation: 'El software privativo reserva esos derechos al titular. El software libre es el que permite uso, estudio, modificación y distribución.' },
+              { type: 'mc', prompt: '¿Qué es una distribución Linux?', options: ['Una combinación de aplicaciones GNU + kernel Linux personalizada para un uso concreto', 'Solo el kernel de Linux', 'Solo las utilidades GNU', 'Un sistema de archivos'], correct: 0 },
+              { type: 'mc', prompt: '¿En qué web se puede ver el ranking de las distribuciones Linux más populares?', options: ['distrowatch.org', 'kernel.org', 'gnu.org', 'linux.com'], correct: 0 },
+              { type: 'tf', prompt: 'Una versión LTS de Ubuntu tiene soporte oficial durante 5 años (ampliable a 10 con Ubuntu Advantage).', correct: true },
+              { type: 'mc', prompt: '¿Qué significa LTS en Ubuntu?', options: ['Long Term Support — versión de soporte a largo plazo', 'Linux Terminal Support', 'Latest Testing Software', 'Light and Thin System'], correct: 0 },
+            ]
+          },
+          {
+            id: 'ISO-UD1-L9',
+            name: 'Virtualización: conceptos y herramientas',
+            desc: 'Hipervisores tipo 1 y 2, VMs, VirtualBox, VMware, KVM',
+            icon: '📦',
+            questions: [
+              { type: 'mc', prompt: '¿Qué es un hipervisor de tipo 1?', options: ['El que corre directamente sobre el hardware, sin SO anfitrión (ej. ESXi, Proxmox)', 'El que corre sobre un SO anfitrión (ej. VirtualBox)', 'El mismo que una máquina virtual de proceso', 'El equivalente a Docker'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué es un hipervisor de tipo 2?', options: ['El que corre sobre un SO anfitrión (ej. VirtualBox, VMware Workstation)', 'El que corre directamente sobre hardware', 'Un contenedor Docker', 'KVM puro'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué tipo de hipervisor es VirtualBox?', options: ['Tipo 2', 'Tipo 1', 'Tipo 3', 'Contenedor'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué tipo de hipervisor es Proxmox VE?', options: ['Tipo 1 (se instala directamente sobre el hardware)', 'Tipo 2', 'Un contenedor Docker', 'Tipo 3'], correct: 0 },
+              { type: 'mc', prompt: '¿Cómo se llama el SO instalado en la máquina real, sobre el que corre el hipervisor?', options: ['SO anfitrión (host)', 'SO huésped (guest)', 'SO virtual', 'SO emulado'], correct: 0 },
+              { type: 'mc', prompt: '¿Cómo se llama el SO instalado dentro de la máquina virtual?', options: ['SO huésped o invitado (guest)', 'SO anfitrión (host)', 'SO emulado nativo', 'SO baremetal'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuál es la principal VENTAJA de la virtualización en servidores?', options: ['Usar varios servidores virtuales en un único hardware físico, reduciendo costes y aumentando eficiencia', 'Que las VMs van más rápido que el hardware nativo', 'Que no consumen RAM ni CPU del host', 'Que son inmunes a fallos de hardware'], correct: 0 },
+              { type: 'mc', prompt: '¿Cuál es el principal INCONVENIENTE de la virtualización?', options: ['Mayor consumo de recursos: la VM siempre irá más lenta que un sistema no virtualizado', 'Que no se puede instalar Linux en VMs', 'Que solo funciona en Windows', 'Que no soporta redes'], correct: 0 },
+              { type: 'tf', prompt: 'Para virtualizar es necesario activar las tecnologías VT-x (Intel) o AMD-V en la BIOS/UEFI del equipo.', correct: true },
+              { type: 'mc', prompt: '¿Qué extensión tienen los discos duros virtuales de VirtualBox?', options: ['.vdi', '.vmdk', '.vhd', '.iso'], correct: 0 },
+              { type: 'mc', prompt: '¿Qué extensión tienen las máquinas virtuales de VirtualBox?', options: ['.vbox', '.vm', '.vmx', '.ovf'], correct: 0 },
+              { type: 'mc', prompt: 'Un archivo malicioso ejecutado en una VM bien aislada, ¿afectará al SO anfitrión?', options: ['No, el daño queda confinado dentro de la VM', 'Sí, siempre infecta el anfitrión', 'Solo si hay adaptador puente activado', 'Solo en Linux'], correct: 0 },
+            ]
+          },
+          {
+            id: 'ISO-UD1-L10',
+            name: '🔥 Repaso ISO (texto libre)',
+            desc: 'Escribe las respuestas — practica el examen de ISO',
+            icon: '✍️',
+            questions: [
+              { type: 'text', prompt: '¿Cuál es la definición de Sistema Operativo según el temario?', correct: ['conjunto de programas que gestiona el hardware y el software', 'programa intermediario entre usuario y hardware', 'software que coordina el hardware y el software'], explanation: 'El SO es un conjunto de programas que gestiona y coordina el funcionamiento del hardware y del software.' },
+              { type: 'text', prompt: '¿Qué tres partes forman la estructura de un sistema operativo?', correct: ['kernel aplicaciones shell', 'nucleo utilidades interfaz', 'kernel shell aplicaciones base'], explanation: 'Núcleo (kernel), aplicaciones de bajo nivel y Shell/interfaz de usuario.' },
+              { type: 'text', prompt: '¿Qué es el kernel de un sistema operativo?', correct: ['nucleo que facilita acceso seguro al hardware', 'parte esencial que da acceso al hardware', 'software responsable del acceso al hardware'], explanation: 'El kernel es el núcleo que implementa abstracciones del hardware para que los programas puedan usarlo de forma segura.' },
+              { type: 'text', prompt: '¿Qué sistema de archivos usa por defecto Ubuntu en la partición raíz?', correct: ['ext4'], explanation: 'Ubuntu usa ext4 por sus ventajas: journaling, sin fragmentación y soporte de grandes ficheros.' },
+              { type: 'text', prompt: '¿Cuántas particiones primarias máximas permite MBR?', correct: ['4', 'cuatro'], explanation: 'El esquema MBR solo admite 4 particiones primarias (o 3 primarias + 1 extendida con lógicas dentro).' },
+              { type: 'text', prompt: '¿Cuántas particiones admite GPT por defecto?', correct: ['128', 'ciento veintiocho'], explanation: 'GPT admite hasta 128 particiones por defecto, eliminando las limitaciones de MBR.' },
+              { type: 'text', prompt: '¿Qué es GRUB2?', correct: ['gestor de arranque de linux', 'Grand Unified Bootloader', 'gestor de arranque grub'], explanation: 'GRUB2 (Grand Unified Bootloader) es el gestor de arranque más usado en Linux para gestionar el arranque de uno o varios SO.' },
+              { type: 'text', prompt: '¿Qué comando de Windows se usa para modificar el BCD desde la consola?', correct: ['bcdedit'], explanation: 'bcdedit.exe es la herramienta de línea de comandos para editar el Boot Configuration Data de Windows Vista en adelante.' },
+              { type: 'text', prompt: '¿Qué significa la libertad 0 del software libre?', correct: ['libertad de uso', 'ejecutar para cualquier proposito', 'usar el programa para lo que desee'], explanation: 'Libertad 0: poder ejecutar el programa para cualquier propósito (privado, educativo, comercial…).' },
+              { type: 'text', prompt: '¿Quién creó el kernel de Linux en 1991?', correct: ['Linus Torvalds', 'linus'], explanation: 'Linus Torvalds anunció en 1991 un kernel libre para la plataforma Intel x386, que evolucionó hasta el Linux actual.' },
+              { type: 'text', prompt: '¿Cuál es el inconveniente principal de la virtualización?', correct: ['mayor consumo de recursos', 'la vm va mas lenta', 'mas lento que sin virtualizar'], explanation: 'La VM siempre correrá con mayor lentitud que un sistema nativo porque el hardware soporta: SO invitado + hipervisor + SO anfitrión.' },
+              { type: 'text', prompt: '¿Qué porcentaje máximo de la RAM del host se recomienda asignar a una máquina virtual?', correct: ['50%', '50 por ciento', 'la mitad'], explanation: 'Se recomienda no superar el 50% de la memoria física real para que el anfitrión también funcione correctamente.' },
+              { type: 'text', prompt: '¿Cuánto peso tiene la Tarea 1 (instalación SO) en la nota final del módulo ISO?', subtitle: 'Dato del profesor en videoconferencia del 16 octubre', correct: ['15%', '15 por ciento'], explanation: 'El profesor indicó en la videotutoría que la Tarea 1 pondera un 15% de la nota final del módulo.' },
+              { type: 'text', prompt: '¿Qué unidad de ISO tiene más peso en el examen según el profesor?', correct: ['unidad 3', 'la 3', 'la tercera unidad', 'UD3'], explanation: 'La unidad 3 vale un 25% del examen — la de mayor peso, según la programación didáctica explicada en la videotutoría.' },
+              { type: 'text', prompt: '¿Cuántas tareas hay que entregar como mínimo para poder aprobar el módulo ISO?', correct: ['6', 'seis'], explanation: 'El profesor indicó: "como mínimo entregar 6 tareas de las 8 obligatorias y aprobar 5 de las 6 entregadas".' },
             ]
           }
         ]
@@ -1879,6 +2178,27 @@ const SUBJECTS = [
               { type: 'mc', prompt: '¿Qué tipo de cable ofrece mayor inmunidad a interferencias electromagnéticas?', options: ['Fibra óptica', 'Par trenzado UTP', 'Coaxial', 'Par trenzado STP'], correct: 0 },
               { type: 'mc', prompt: '¿Qué significa FDDI?', options: ['Fiber Distributed Data Interface', 'Fast Data Direct Interface', 'Fiber Data Distribution Internet', 'Fast Distributed Data Intranet'], correct: 0 },
               { type: 'fill', prompt: 'En Ethernet, el cable de ___ consta de pares de hilos de cobre entrelazados para reducir interferencias.', words: ['par trenzado', 'fibra optica', 'coaxial', 'red'], correct: 0 },
+            ]
+          },
+          {
+            id: 'PAR-UD1-L8',
+            name: '🔥 Repaso redes (texto libre)',
+            desc: 'Responde escribiendo — practica el examen de PAR',
+            icon: '✍️',
+            questions: [
+              { type: 'text', prompt: '¿Cuántas capas tiene el modelo OSI?', correct: ['7', 'siete'], explanation: 'El modelo OSI (ISO) define 7 capas: Física, Enlace, Red, Transporte, Sesión, Presentación y Aplicación.' },
+              { type: 'text', prompt: '¿Cuántas capas tiene el modelo TCP/IP?', correct: ['4', 'cuatro'], explanation: 'El modelo TCP/IP agrupa las 7 capas OSI en 4: Subred (acceso), Internet, Transporte y Aplicación.' },
+              { type: 'text', prompt: '¿En qué capa del modelo OSI se encuentran las direcciones IP?', correct: ['capa de red', 'red', 'capa 3', 'nivel 3', 'network layer'], explanation: 'La capa 3 (Red) gestiona el direccionamiento lógico (IP) y el enrutamiento entre redes.' },
+              { type: 'text', prompt: '¿En qué capa del modelo OSI están los puertos TCP y UDP?', correct: ['capa de transporte', 'transporte', 'capa 4', 'nivel 4'], explanation: 'La capa 4 (Transporte) gestiona la comunicación extremo a extremo con TCP (fiable) y UDP (no fiable).' },
+              { type: 'text', prompt: '¿Qué es la dirección MAC?', correct: ['dirección física de 48 bits única de cada dispositivo', 'direccion fisica 48 bits', 'dirección de 48 bits', 'mac address 48 bits'], explanation: 'La dirección MAC (Media Access Control) es un identificador físico de 48 bits asignado a cada interfaz de red.' },
+              { type: 'text', prompt: '¿Qué significa LAN?', correct: ['Local Area Network', 'red de area local', 'red área local'], explanation: 'LAN = Local Area Network. Red de pequeña extensión, típicamente un edificio o campus.' },
+              { type: 'text', prompt: '¿Qué significa WAN?', correct: ['Wide Area Network', 'red de area extensa', 'red área amplia'], explanation: 'WAN = Wide Area Network. Red de gran extensión; el ejemplo más conocido es Internet.' },
+              { type: 'text', prompt: '¿Qué protocolo de transporte garantiza la entrega de datos con confirmación?', correct: ['TCP', 'Transmission Control Protocol'], explanation: 'TCP (Transmission Control Protocol) establece conexión previa (3-way handshake) y confirma la recepción de datos.' },
+              { type: 'text', prompt: '¿Qué protocolo de transporte prioriza la velocidad sin garantizar la entrega?', correct: ['UDP', 'User Datagram Protocol'], explanation: 'UDP (User Datagram Protocol) no establece conexión ni confirmación, ideal para streaming, VoIP o DNS.' },
+              { type: 'text', prompt: '¿En qué puerto escucha por defecto un servidor web HTTPS?', correct: ['443', 'puerto 443'], explanation: 'HTTPS usa el puerto 443 (HTTP no cifrado usa el puerto 80).' },
+              { type: 'text', prompt: '¿En qué puerto trabaja el protocolo SSH?', correct: ['22', 'puerto 22'], explanation: 'SSH (Secure Shell) usa el puerto 22 para conexiones remotas cifradas.' },
+              { type: 'text', prompt: '¿Qué es el encapsulamiento en redes?', correct: ['añadir cabeceras en cada capa al bajar datos', 'añadir informacion en cada capa', 'encapsular añadiendo cabeceras'], explanation: 'Al bajar por las capas, cada una añade su cabecera (y a veces cola) al paquete con la información necesaria para esa capa.' },
+              { type: 'text', prompt: 'Nombra los tres rangos de IPs privadas (una dirección de cada clase basta).', correct: ['10.0.0.0 172.16.0.0 192.168.0.0', '10 172 192', 'clase a b c privadas'], explanation: 'Clase A: 10.0.0.0/8 · Clase B: 172.16.0.0/12 · Clase C: 192.168.0.0/16' },
             ]
           }
         ]
@@ -2034,8 +2354,23 @@ function renderHome() {
         btn.innerHTML = '<span class="node-ico">' + (unlocked ? lesson.icon : '🔒') + '</span>' +
                         (completed ? '<span class="node-badge">✓</span>' : '');
         btn.onclick = () => {
-          if (unlocked) startLesson(subject.id, unit.id, lesson.id);
-          else floatPop('🔒 Termina la lección anterior', { color: '#777777' });
+          if (!unlocked) { floatPop('🔒 Termina la lección anterior', { color: '#777777' }); return; }
+          if (completed) {
+            openModal({
+              mascot: 'chip',
+              mood: 'happy',
+              title: lesson.name,
+              text: '',
+              cancelText: '⚡ Modo Normal',
+              confirmText: '🔥 Modo Difícil',
+              confirmClass: 'red',
+              extraContent: `<div class="hard-mode-picker"><p style="color:var(--wolf);font-weight:700;font-size:.88rem;text-align:center;margin:-8px 0 4px">Elige cómo practicar esta lección</p><p style="color:var(--hare);font-size:.78rem;text-align:center">Modo Difícil: todas las respuestas por escrito</p></div>`,
+              onCancel: () => startLesson(subject.id, unit.id, lesson.id, false),
+              onConfirm: () => startLesson(subject.id, unit.id, lesson.id, true)
+            });
+          } else {
+            startLesson(subject.id, unit.id, lesson.id, false);
+          }
         };
         row.appendChild(btn);
 
@@ -2225,7 +2560,30 @@ let selectedAnswer = null;
 let pendingAction = null;
 let isChecking = false; // Estado para validación diferida
 
-function startLesson(subjectId, unitId, lessonId) {
+// Convert any question type to a free-text question for hard mode
+function convertToTextQuestion(q) {
+  if (q.type === 'text') return q; // already text
+  const base = { type: 'text', prompt: q.prompt, subtitle: q.subtitle, explanation: q.explanation };
+  if (q.type === 'mc') {
+    base.correct = q.options[q.correct];
+  } else if (q.type === 'tf') {
+    base.correct = q.correct ? ['verdadero', 'true', 'v', 'sí', 'si'] : ['falso', 'false', 'f', 'no'];
+    base.prompt = q.prompt;
+  } else if (q.type === 'fill') {
+    base.correct = q.words[q.correct];
+  } else if (q.type === 'match') {
+    // For match: ask each pair as separate text question — we take first pair
+    base.prompt = q.prompt + ' → ' + q.pairs[0][0];
+    base.correct = q.pairs[0][1];
+  } else {
+    base.correct = q.correct;
+  }
+  return base;
+}
+
+let currentLessonHardMode = false;
+
+function startLesson(subjectId, unitId, lessonId, hardMode) {
   // Find lesson
   let lesson = null, subject = null, unit = null;
   for (const s of SUBJECTS) {
@@ -2248,8 +2606,14 @@ function startLesson(subjectId, unitId, lessonId) {
   correctCount = 0;
   wrongCount = 0;
   comboCount = 0;
+  currentLessonHardMode = !!hardMode;
   // Each lesson gets a random hardware companion
   lessonMascotType = MASCOT_TYPES[Math.floor(Math.random() * MASCOT_TYPES.length)];
+
+  // In hard mode: convert all questions to type 'text'
+  if (currentLessonHardMode) {
+    currentQuestions = currentQuestions.map(q => convertToTextQuestion(q));
+  }
 
   showScreen('screen-lesson');
   updateLessonHeader();
@@ -2259,7 +2623,7 @@ function startLesson(subjectId, unitId, lessonId) {
 function updateLessonHeader() {
   const progress = currentQuestions.length > 0 ? (qIndex / currentQuestions.length) * 100 : 0;
   document.getElementById('lesson-progress-bar').style.width = progress + '%';
-  document.getElementById('lesson-hearts-count').textContent = '∞';
+  document.getElementById('lesson-hearts-count').textContent = currentLessonHardMode ? '🔥' : '∞';
 }
 
 function getMascotForQuestion(q) {
@@ -2326,6 +2690,7 @@ function renderQuestion() {
   else if (q.type === 'tf') renderTF(q, body);
   else if (q.type === 'fill') renderFill(q, body);
   else if (q.type === 'match') renderMatch(q, body);
+  else if (q.type === 'text') renderText(q, body);
 
   document.getElementById('btn-continue').style.display = 'none';
   document.getElementById('lesson-feedback').classList.remove('show', 'correct', 'wrong');
@@ -2339,7 +2704,8 @@ function getQuestionTypeLabel(type) {
     'mc': 'Selecciona la respuesta correcta',
     'tf': '¿Verdadero o falso?',
     'fill': 'Completa el espacio',
-    'match': 'Empareja las parejas'
+    'match': 'Empareja las parejas',
+    'text': '✍️ Escribe la respuesta'
   };
   return labels[type] || 'Responde';
 }
@@ -2583,12 +2949,120 @@ function selectMatch(el) {
   }
 }
 
+// ---- Helpers for text questions ----
+function normalizeAnswer(str) {
+  return str.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) =>
+    Array.from({ length: n + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
+  );
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i-1] === b[j-1]
+        ? dp[i-1][j-1]
+        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function fuzzyMatch(userInput, correctAnswer) {
+  const a = normalizeAnswer(userInput);
+  const candidates = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+  for (const cand of candidates) {
+    const b = normalizeAnswer(cand);
+    if (a === b) return true;
+    const threshold = b.length <= 5 ? 1 : b.length <= 10 ? 2 : 3;
+    if (levenshtein(a, b) <= threshold) return true;
+    if (b.length > 4 && a.includes(b)) return true;
+  }
+  return false;
+}
+
+// ---- Render text-input question ----
+function renderText(q, body) {
+  const wrap = document.createElement('div');
+  wrap.className = 'text-answer-wrap';
+
+  const input = document.createElement('textarea');
+  input.className = 'text-answer-input';
+  input.placeholder = 'Escribe tu respuesta aquí…';
+  input.setAttribute('autocomplete', 'off');
+  input.setAttribute('autocorrect', 'off');
+  input.setAttribute('spellcheck', 'false');
+  input.rows = 2;
+
+  const hint = document.createElement('div');
+  hint.className = 'text-answer-hint';
+  hint.textContent = 'Pulsa COMPROBAR cuando estés listo · Enter para enviar';
+
+  const showCorrect = document.createElement('div');
+  showCorrect.className = 'text-correct-answer';
+  const correctDisplay = Array.isArray(q.correct) ? q.correct[0] : q.correct;
+  showCorrect.innerHTML = `<strong>Respuesta correcta:</strong> ${correctDisplay}`;
+
+  wrap.appendChild(input);
+  wrap.appendChild(hint);
+  wrap.appendChild(showCorrect);
+  body.appendChild(wrap);
+
+  selectedAnswer = { type: 'text', input, q, showCorrect, submitted: false };
+
+  input.addEventListener('input', () => {
+    if (isChecking) return;
+    const btn = document.getElementById('btn-continue');
+    if (input.value.trim()) {
+      btn.style.display = 'block';
+      btn.textContent = 'Comprobar';
+      btn.classList.remove('wrong');
+      pendingAction = 'check';
+    } else {
+      btn.style.display = 'none';
+      pendingAction = null;
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey) {
+      e.preventDefault();
+      if (input.value.trim() && !isChecking && !selectedAnswer.submitted) {
+        checkCurrentAnswer();
+      }
+    }
+  });
+
+  setTimeout(() => input.focus(), 140);
+}
+
 function checkCurrentAnswer() {
   if (!selectedAnswer || isChecking) return;
   isChecking = true;
-  
+
   const { type } = selectedAnswer;
-  
+
+  if (type === 'text') {
+    const { input, q, showCorrect } = selectedAnswer;
+    selectedAnswer.submitted = true;
+    input.disabled = true;
+    const isCorrect = fuzzyMatch(input.value, q.correct);
+    if (isCorrect) {
+      input.classList.add('correct-input');
+      handleCorrect();
+    } else {
+      input.classList.add('wrong-input');
+      showCorrect.style.display = 'block';
+      handleWrong();
+    }
+    return;
+  }
+
   if (type === 'mc') {
     const { idx, correctIdx, btn, container } = selectedAnswer;
     container.querySelectorAll('.mc-answer').forEach(b => b.classList.add('disabled'));
@@ -2603,7 +3077,7 @@ function checkCurrentAnswer() {
       container.querySelectorAll('.mc-answer')[correctIdx].classList.add('correct');
       handleWrong();
     }
-  } 
+  }
   else if (type === 'tf') {
     const { choice, correct, btn, container } = selectedAnswer;
     container.querySelectorAll('.tf-btn').forEach(b => b.style.pointerEvents = 'none');
@@ -2627,7 +3101,6 @@ function checkCurrentAnswer() {
       handleCorrect();
     } else {
       slot.classList.add('incorrect');
-      // Mostrar la palabra correcta visualmente
       bank.querySelectorAll('.fill-word').forEach(w => {
         if (w.dataset.word === correctWord) {
           w.style.borderColor = 'var(--duo-green)';
@@ -3242,22 +3715,30 @@ function reactMascot(kind) {
 // ============================================================
 let modalCallback = null;
 
+let modalCancelCallback = null;
+
 function openModal(opts) {
   document.getElementById('modal-mascot').innerHTML = mascotSVG(opts.mascot || 'ram', opts.mood || 'idle');
   document.getElementById('modal-title').textContent = opts.title || '';
-  document.getElementById('modal-text').textContent = opts.text || '';
+  const textEl = document.getElementById('modal-text');
+  textEl.textContent = opts.text || '';
+  // Support extra HTML content injected below title
+  if (opts.extraContent) textEl.innerHTML = opts.extraContent;
   const cancelBtn = document.getElementById('modal-cancel');
   const confirmBtn = document.getElementById('modal-confirm');
   cancelBtn.textContent = opts.cancelText || 'Cancelar';
   confirmBtn.textContent = opts.confirmText || 'Aceptar';
   confirmBtn.className = 'btn-modal ' + (opts.confirmClass || 'green');
+  cancelBtn.className = 'btn-modal ' + (opts.cancelClass || 'green');
   modalCallback = opts.onConfirm || null;
+  modalCancelCallback = opts.onCancel || null;
   document.getElementById('exit-modal').classList.add('show');
 }
 
 function closeModal() {
   document.getElementById('exit-modal').classList.remove('show');
   modalCallback = null;
+  modalCancelCallback = null;
 }
 
 // ============================================================
@@ -3332,7 +3813,11 @@ document.querySelectorAll('.tab').forEach(tab => {
   tab.onclick = () => switchTab(tab.dataset.tab);
 });
 
-document.getElementById('modal-cancel').onclick = () => closeModal();
+document.getElementById('modal-cancel').onclick = () => {
+  const cb = modalCancelCallback;
+  closeModal();
+  if (cb) cb();
+};
 
 document.getElementById('modal-confirm').onclick = () => {
   const cb = modalCallback;
